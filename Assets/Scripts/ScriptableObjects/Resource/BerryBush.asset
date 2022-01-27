@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ResourceType: 0
   MaxValue: 10
+  WorldObject: {fileID: 6471317633305166778, guid: 180209a29e7730e449a0fd6b7914fee2, type: 3}

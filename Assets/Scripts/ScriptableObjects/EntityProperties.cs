@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "EntityProperties", menuName = "ScriptableObjects/EntityProperties", order = 1)]

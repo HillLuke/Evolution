@@ -1,16 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Resource", menuName = "ScriptableObjects/Resource", order = 1)]
-public class ResourceSO : ScriptableObject
+namespace Assets.Scripts.ScriptableObjects.Resource
 {
-    public EResourceType ResourceType;
-    public float MaxValue;
-}
+    [CreateAssetMenu(fileName = "Resource", menuName = "ScriptableObjects/Resource", order = 1)]
+    public class ResourceSO : ScriptableObject
+    {
+        public EResourceType ResourceType;
+        public float MaxValue;
+        public Resource WorldObject;
+    }
 
-public enum EResourceType
-{
-    Food,
-    Water
+    public enum EResourceType
+    {
+        Food,
+        Water
+    }
 }
