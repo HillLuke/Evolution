@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Interfaces;
-using Assets.Scripts.ScriptableObjects.Resource;
+using Assets.Scripts.ScriptableObjects.Resources;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,23 +8,23 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Resource
+namespace Assets.Scripts.Resources
 {
+    [Serializable]
     public class Resource : MonoBehaviour, ISpawnable, ISpawnAnimationEvents, IMonitorable
     {
+        [Title("Public")]
+        [ShowInInspector]
         public float Value { get { return _value; } }
         public EResourceType ResourceType { get { return _resourceProperties.ResourceType; } }
 
-        [SerializeField]
-        private float _value;
-
-        [SerializeField]
+        [Title("Private")]
+        [Required, SerializeReference]
         private ResourceSO _resourceProperties;
 
-        [SerializeField]
         private Animator _animator;
-        [SerializeField]
         private bool _isSelected;
+        private float _value;
 
         void Start()
         {

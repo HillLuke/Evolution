@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6471317633305166779}
   - component: {fileID: 6471317633305166790}
   - component: {fileID: 6471317633305166777}
-  - component: {fileID: 6471317633305166778}
   - component: {fileID: 6471317633305166789}
+  - component: {fileID: 2650172293897638502}
   m_Layer: 6
   m_Name: BerryBush
   m_TagString: Untagged
@@ -64,22 +64,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6471317633305166778
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6471317633305166780}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 914f6fd77bd4afd4abac537b4889cbae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Text: {fileID: 0}
-  _value: 0
-  _resourceProperties: {fileID: 11400000, guid: 16461a6033dcc3e4dbccb3c0bcb49d40, type: 2}
-  _animator: {fileID: 6471317633305166789}
 --- !u!95 &6471317633305166789
 Animator:
   serializedVersion: 3
@@ -99,6 +83,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2650172293897638502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6471317633305166780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3340249555dee9b4cbb8d254efa5704d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _resourceProperties: {fileID: 11400000, guid: 16461a6033dcc3e4dbccb3c0bcb49d40, type: 2}
 --- !u!1001 &1085634978350891702
 PrefabInstance:
   m_ObjectHideFlags: 0

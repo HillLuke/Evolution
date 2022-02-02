@@ -1,30 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Entities;
+using System.Collections.Generic;
+using Assets.Scripts.ScriptableObjects.Managers;
+using Assets.Scripts.ScriptableObjects.Entities;
 using UnityEngine;
 
 namespace Assets.Scripts.Manager
 {
     public class EntityManager : MonoBehaviour
     {
-        public List<Entity> SpawnableEntities;
+        public SpawnableEntities SpawnableEntities;
         public int MaxSpawnableEntities;
-        public Entity[] SpawnedEntities;
         public GameObject EntityParent;
+
+        private BaseEntity[] _spawnedEntities;
 
         private void Awake()
         {
-            SpawnedEntities = new Entity[MaxSpawnableEntities];
+            _spawnedEntities = new BaseEntity[MaxSpawnableEntities];
         }
 
         private void Update()
         {
             for (int i = 0; i < MaxSpawnableEntities; i++)
             {
-                if (SpawnedEntities[i] == null)
+                if (_spawnedEntities[i] == null)
                 {
                     var point = EvolutionManager.Instance.GetRandomPointOnMesh();
                     if (point != Vector3.zero)
                     {
-                        SpawnedEntities[i] = Instantiate(SpawnableEntities[0], EvolutionManager.Instance.GetRandomPointOnMesh(), Quaternion.identity, EntityParent.transform);
+                        _spawnedEntities[i] = Instantiate(SpawnableEntities.SpawnableList.GetRandom().WorldObject, EvolutionManager.Instance.GetRandomPointOnMesh(), Quaternion.identity, EntityParent.transform);
                     }
                 }
             }

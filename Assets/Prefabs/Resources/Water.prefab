@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 6693273238385141069}
   - component: {fileID: 6693273238385141057}
   - component: {fileID: 6693273238385141056}
-  - component: {fileID: 6693273238385141070}
   - component: {fileID: 6693273238385141058}
   - component: {fileID: 6693273238385141071}
   - component: {fileID: 1104425652374053093}
+  - component: {fileID: 6963446567325990121}
   m_Layer: 7
   m_Name: Water
   m_TagString: Untagged
@@ -85,21 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6693273238385141070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6693273238385141068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 914f6fd77bd4afd4abac537b4889cbae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _value: 10
-  _resourceProperties: {fileID: 11400000, guid: 617f3747e1a81f441bc57649bf573a10, type: 2}
-  _animator: {fileID: 1104425652374053093}
 --- !u!208 &6693273238385141058
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -148,3 +133,16 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &6963446567325990121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6693273238385141068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3340249555dee9b4cbb8d254efa5704d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _resourceProperties: {fileID: 11400000, guid: 617f3747e1a81f441bc57649bf573a10, type: 2}

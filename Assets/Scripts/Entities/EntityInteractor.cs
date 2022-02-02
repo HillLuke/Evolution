@@ -4,24 +4,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 namespace Assets.Scripts.Entities
 {
     public class EntityInteractor : MonoBehaviour
     {
+        [Title("Private Read Only")]
+        [ShowInInspector, ReadOnly]
         private SphereCollider _sphereCollider;
+        [ShowInInspector, ReadOnly]
         private EntityProperties _entityProperties;
+        [ShowInInspector, ReadOnly]
         private GameObject _interactGoal;
+        [ShowInInspector, ReadOnly]
         private List<GameObject> _triggers;
-
+        [ShowInInspector, ReadOnly]
         public bool isInInteractRange;
-        public Action ActoinInRange;
 
-        private void Start()
+        public System.Action ActoinInRange;
+
+        private void Awake()
         {
             _sphereCollider = GetComponent<SphereCollider>();
             isInInteractRange = false;
             _triggers = new List<GameObject>();
+            if (_sphereCollider == null)
+            {
+                throw new ArgumentNullException(nameof(SphereCollider));
+            }
         }
 
         public void Init(EntityProperties entityProperties)
@@ -29,7 +40,6 @@ namespace Assets.Scripts.Entities
             _entityProperties = entityProperties;
             _sphereCollider.radius = _entityProperties.InteractRange;
         }
-
 
         private void OnTriggerEnter(Collider other)
         {
@@ -72,6 +82,7 @@ namespace Assets.Scripts.Entities
         {
             _interactGoal = interactGoal;
         }
+
     }
 
 }
