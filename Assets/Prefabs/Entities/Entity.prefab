@@ -63,7 +63,6 @@ MonoBehaviour:
   TriggerExit:
     m_PersistentCalls:
       m_Calls: []
-  Collider: {fileID: 0}
 --- !u!1 &5962049874776042240
 GameObject:
   m_ObjectHideFlags: 0
@@ -241,7 +240,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1.8
+  m_Height: 1.97
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 0
@@ -273,5 +272,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52b719ff2ab5a9e40bfa969d983a099c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InteractCollider: {fileID: 7029700316828464829}
-  _entityProperties: {fileID: 11400000, guid: 7c9b7e74c00ae5648af3b7fa35ed7b0b, type: 2}

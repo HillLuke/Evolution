@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Entities
 {
@@ -45,10 +46,31 @@ namespace Assets.Scripts.Entities
         [ShowInInspector, ReadOnly]
         protected NavMeshPath _path;
 
-        protected abstract void Goto();
-        protected abstract void Wander();
-        protected abstract void DoAction();
-        protected abstract void StateLoop();
+        protected virtual void Goto() { }
+        protected virtual void Wander()
+        {
+            if (_goal == Vector3.zero || DestinationReached())
+            {
+                Vector3 direction = Random.insideUnitSphere * Random.Range(_entityProperties.Properties.MinWalkable, _entityProperties.Properties.MaxWalkable);
+                direction += gameObject.transform.position;
+
+                NavMeshHit navMeshHit;
+                NavMesh.SamplePosition(direction, out navMeshHit, _entityProperties.Properties.MaxWalkable, 1);
+                Vector3 goalOriginal = navMeshHit.position;
+                Vector3 pathDir = transform.position - goalOriginal;
+                var goal = goalOriginal + (pathDir.normalized * (_agent.radius));
+
+                var path = GetPathToTarget(goal);
+
+                if (path != null && _agent.SetPath(path))
+                {
+                    _goal = goal;
+                }
+            }
+        }
+
+        protected virtual void DoAction() { }
+        protected virtual void StateLoop() { }
 
         public virtual void Awake()
         {
@@ -128,6 +150,19 @@ namespace Assets.Scripts.Entities
             }
 
             return false;
+        }
+
+        protected NavMeshPath GetPathToTarget(Vector3 target)
+        {
+            NavMeshPath path = new NavMeshPath();
+            if (_agent.CalculatePath(target, path))
+            {
+                return path;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

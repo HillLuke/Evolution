@@ -20,7 +20,7 @@ MonoBehaviour:
     InteractRange: 1.5
     InteractTime: 1
     MaxWalkable: 10
-    MinWalkable: 5
-    MaxHealth: 10
+    MinWalkable: 10
+    MaxHealth: 15
     Name: Herbivore
   WorldObject: {fileID: 7200522718009532444, guid: ad42c76876a2f2145bf3d1b60676a5ee, type: 3}
