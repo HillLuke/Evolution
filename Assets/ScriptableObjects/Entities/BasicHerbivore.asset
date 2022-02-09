@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: BasicHerbivore
   m_EditorClassIdentifier: 
   Properties:
-    HungerMax: 1
-    HungerDecrease: 0.2
-    ThirstMax: 2
-    ThirstDecrease: 0.2
+    HungerMax: 3
+    HungerDecrease: 0.16
+    ThirstMax: 10
+    ThirstDecrease: 0.08
     InteractRange: 1.5
     InteractTime: 1
     MaxWalkable: 10

@@ -12,26 +12,38 @@ namespace Assets.Scripts.Manager
         public int MaxSpawnableEntities;
         public GameObject EntityParent;
 
-        private BaseEntity[] _spawnedEntities;
+        private List<BaseEntity> _spawnedEntities;
 
         private void Awake()
         {
-            _spawnedEntities = new BaseEntity[MaxSpawnableEntities];
+            _spawnedEntities = new List<BaseEntity>();
         }
 
-        private void Update()
+        private void Start()
         {
             for (int i = 0; i < MaxSpawnableEntities; i++)
             {
-                if (_spawnedEntities[i] == null)
+                var point = EvolutionManager.Instance.GetRandomPointOnMesh();
+                if (point != Vector3.zero)
                 {
-                    var point = EvolutionManager.Instance.GetRandomPointOnMesh();
-                    if (point != Vector3.zero)
-                    {
-                        _spawnedEntities[i] = Instantiate(SpawnableEntities.SpawnableList.GetRandom().WorldObject, EvolutionManager.Instance.GetRandomPointOnMesh(), Quaternion.identity, EntityParent.transform);
-                    }
+                    SpawnEntityAtPosition(
+                        SpawnableEntities.SpawnableList.GetRandom().WorldObject,
+                        EvolutionManager.Instance.GetRandomPointOnMesh()
+                        );
                 }
             }
+        }
+
+        public void SpawnEntityAtPosition(BaseEntity entity, Vector3 position)
+        {
+            _spawnedEntities.Add(
+                Instantiate(
+                    entity, 
+                    position, 
+                    Quaternion.identity, 
+                    EntityParent.transform
+                    )
+                );
         }
     }
 }

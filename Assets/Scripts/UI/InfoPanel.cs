@@ -50,6 +50,10 @@ namespace Assets.Scripts.UI
             {
                 Data.SetText(_monitorable.GetData());
             }
+            else
+            {
+                Panel.SetActive(false);
+            }
         }
     }
 }

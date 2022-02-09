@@ -19,7 +19,6 @@ namespace Assets.Scripts.Entities
         NONE,
         Food,
         Water,
-        Prey,
         Mate
     }
 

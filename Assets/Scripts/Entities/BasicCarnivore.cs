@@ -12,18 +12,6 @@ namespace Assets.Scripts.Entities
 {
     public class BasicCarnivore : BaseEntity, ICarnivore
     {
-        public override void Awake()
-        {
-            base.Awake();
-        }
-
-        public override void Start()
-        {
-            base.Start();
-
-            State = State.Wander;
-        }
-
         protected override void StateLoop()
         {
             switch (State)

@@ -16,8 +16,12 @@ namespace Assets.Scripts.Entities
     public abstract class BaseEntity : MonoBehaviour, IEntity, IMonitorable
     {
         public string Name => _entityProperties.Properties.Name;
+
+        [ShowInInspector, ReadOnly]
         public State State { get; protected set; }
+        [ShowInInspector, ReadOnly]
         public LookFor LookFor { get; protected set; }
+        [ShowInInspector, ReadOnly]
         public Action Action { get; protected set; }
 
         [Title("Private Serialized")]
@@ -47,6 +51,7 @@ namespace Assets.Scripts.Entities
         protected NavMeshPath _path;
 
         protected virtual void Goto() { }
+
         protected virtual void Wander()
         {
             if (_goal == Vector3.zero || DestinationReached())
@@ -68,13 +73,14 @@ namespace Assets.Scripts.Entities
                 }
             }
         }
+        protected virtual void LookForTarget() { }
 
         protected virtual void DoAction() { }
         protected virtual void StateLoop() { }
 
         public virtual void Awake()
         {
-            State = State.NONE;
+            State = State.Wander;
             LookFor = LookFor.NONE;
             Action = Action.NONE;
             _path = new NavMeshPath();
@@ -85,9 +91,9 @@ namespace Assets.Scripts.Entities
             _health = _entityProperties.Properties.MaxHealth;
         }
 
+
         public virtual void Start()
         {
-
         }
 
         public virtual void Update()
@@ -117,13 +123,30 @@ namespace Assets.Scripts.Entities
                 }
             }
 
+            if (Action == Action.NONE && LookFor == LookFor.NONE)
+            {
+                if (_hunger <= 0)
+                {
+                    Debug.Log("Look for food");
+                    State = State.Wander;
+                    LookFor = LookFor.Food;
+                }
+                else if (_thirst <= 0)
+                {
+                    Debug.Log("Look for water");
+                    State = State.Wander;
+                    LookFor = LookFor.Water;
+                }
+
+            }
+
             StateLoop();
         }
 
         public virtual string GetData()
         {
             return $"Name: {Name}\nState: {State}\nLookFor: {LookFor}\nAction: {Action}"
-                + $"\nHealth: {_health.ToString("#.##")}\nThirst: {_thirst.ToString("#.##")}\nHunger: {_hunger.ToString("#.##")}\n";
+                + $"\nHealth: {_health.ToString("0.##")}\nThirst: {_thirst.ToString("0.##")}\nHunger: {_hunger.ToString("0.##")}\n";
         }
 
         public void Select()
