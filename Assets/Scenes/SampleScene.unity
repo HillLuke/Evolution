@@ -612,7 +612,7 @@ MonoBehaviour:
     m_Bits: 64
   WaterMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   EntityMask:
     serializedVersion: 2
     m_Bits: 256
@@ -620,6 +620,9 @@ MonoBehaviour:
   SpawnLayer:
     serializedVersion: 2
     m_Bits: 512
+  OnTick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &434958270
 MonoBehaviour:
   m_ObjectHideFlags: 0

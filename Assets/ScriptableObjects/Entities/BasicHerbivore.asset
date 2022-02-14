@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: BasicHerbivore
   m_EditorClassIdentifier: 
   Properties:
-    HungerMax: 3
+    Identity: {fileID: 11400000, guid: 14d0f8bd123da3a4d93613f91198e7e1, type: 2}
+    HungerMax: 2
     HungerDecrease: 0.16
     ThirstMax: 10
     ThirstDecrease: 0.08
@@ -21,6 +22,15 @@ MonoBehaviour:
     InteractTime: 1
     MaxWalkable: 10
     MinWalkable: 10
-    MaxHealth: 15
+    MaxHealth: 10
     Name: Herbivore
+    ActionTicks: 5
+    Eats:
+    - {fileID: 11400000, guid: 41dc15cf575804a4581294639f6d21ab, type: 2}
+    Drinks:
+    - {fileID: 11400000, guid: 02d0b7b4e87a5dc46977dda2bac0c404, type: 2}
+    BirthTicks: 100
+    BirthChance: 15
+    BirthHungerPercentageNeeded: 0.75
+    BirthHungerPercentageUsed: 0.25
   WorldObject: {fileID: 7200522718009532444, guid: ad42c76876a2f2145bf3d1b60676a5ee, type: 3}

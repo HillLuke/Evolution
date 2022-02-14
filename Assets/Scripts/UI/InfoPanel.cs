@@ -35,7 +35,7 @@ namespace Assets.Scripts.UI
                     if (_monitorable != null)
                     {
                         selectedWorldItem.Follow(hit.transform.gameObject);
-                        Title.SetText(hit.transform.gameObject.name);
+                        Title.SetText(_monitorable.GetName());
                         Panel.SetActive(true);
                     }
                     else

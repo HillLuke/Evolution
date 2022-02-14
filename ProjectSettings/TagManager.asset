@@ -12,8 +12,8 @@ TagManager:
   - 
   - Water
   - UI
-  - FoodResorce
-  - WaterResource
+  - Resource
+  - 
   - Entity
   - Terrain
   - 

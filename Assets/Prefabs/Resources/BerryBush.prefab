@@ -107,6 +107,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BerryBush
       objectReference: {fileID: 0}
+    - target: {fileID: 722268720418334428, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 722268720418334431, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -150,6 +154,34 @@ PrefabInstance:
     - target: {fileID: 722268720418334431, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3190124935721789106, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6170135449014580011, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6358840315310134921, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7970083005376288958, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974036554964002510, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8340821291219346823, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8714244854948832639, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}

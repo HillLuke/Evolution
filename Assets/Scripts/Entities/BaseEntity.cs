@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.Interfaces;
+using Assets.Scripts.Manager;
 using Assets.Scripts.ScriptableObjects.Entities;
+using Assets.Scripts.ScriptableObjects.Identity;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,7 @@ using Random = UnityEngine.Random;
 namespace Assets.Scripts.Entities
 {
     [Serializable]
-    public abstract class BaseEntity : MonoBehaviour, IEntity, IMonitorable
+    public abstract class BaseEntity : MonoBehaviour, IEntity, IMonitorable, IIdentity
     {
         public string Name => _entityProperties.Properties.Name;
 
@@ -38,8 +40,6 @@ namespace Assets.Scripts.Entities
         [ShowInInspector, ReadOnly]
         protected float _thirst;
         [ShowInInspector, ReadOnly]
-        protected float _interactTimer;
-        [ShowInInspector, ReadOnly]
         protected GameObject _interactGoal;
         [ShowInInspector, ReadOnly]
         protected Vector3 _goal;
@@ -49,12 +49,24 @@ namespace Assets.Scripts.Entities
         protected NavMeshAgent _agent;
         [ShowInInspector, ReadOnly]
         protected NavMeshPath _path;
+        [ShowInInspector, ReadOnly]
+        protected int _birthticks;
+        [ShowInInspector, ReadOnly]
+        protected int _actionticks;
+        [ShowInInspector, ReadOnly]
+        protected Collider[] _colliders;
+
+        protected virtual void Tick() 
+        { 
+            _birthticks++;
+            _actionticks++;
+        }
 
         protected virtual void Goto() { }
 
         protected virtual void Wander()
         {
-            if (_goal == Vector3.zero || DestinationReached())
+            if (TryDoAction() && (_goal == Vector3.zero || DestinationReached()))
             {
                 Vector3 direction = Random.insideUnitSphere * Random.Range(_entityProperties.Properties.MinWalkable, _entityProperties.Properties.MaxWalkable);
                 direction += gameObject.transform.position;
@@ -73,7 +85,49 @@ namespace Assets.Scripts.Entities
                 }
             }
         }
-        protected virtual void LookForTarget() { }
+        protected virtual void LookForTarget()
+        {
+            try
+            {
+                Array.Clear(_colliders, 0, _colliders.Length);
+                Physics.OverlapSphereNonAlloc(gameObject.transform.position, _entityProperties.Properties.InteractRange * 4, _colliders);
+
+                GameObject target = null;
+
+                switch (LookFor)
+                {
+                    case LookFor.Food:
+                        {
+                            var food = _colliders.Where(x => x?.GetComponent<IIdentity>() != null && _entityProperties.Properties.Eats.Contains(x?.GetComponent<IIdentity>()?.GetIdentity())).Select(x => x.gameObject).ToList();
+                            target = food.FirstOrDefault();
+                        }
+                        break;
+                    case LookFor.Water:
+                        {
+                            var water = _colliders.Where(x => x?.GetComponent<IIdentity>() != null && _entityProperties.Properties.Drinks.Contains(x?.GetComponent<IIdentity>()?.GetIdentity())).Select(x => x.gameObject).ToList();
+                            target = water.FirstOrDefault();
+                        }
+                        break;
+                }
+
+                Array.Clear(_colliders, 0, _colliders.Length);
+
+                if (target != null)
+                {
+                    State = State.GoTo;
+                    var path = GetPathToTarget(target.transform.position);
+                    if (path != null && _agent.SetPath(path))
+                    {
+                        _goal = target.transform.position;
+                        _interactGoal = target;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+        }
 
         protected virtual void DoAction() { }
         protected virtual void StateLoop() { }
@@ -89,23 +143,33 @@ namespace Assets.Scripts.Entities
             _thirst = _entityProperties.Properties.ThirstMax;
             _hunger = _entityProperties.Properties.HungerMax;
             _health = _entityProperties.Properties.MaxHealth;
+            _birthticks = 0;
+            _colliders = new Collider[4];
         }
 
 
         public virtual void Start()
         {
+            EvolutionManager.Instance.OnTick.AddListener(Tick);
         }
 
         public virtual void Update()
         {
             if (!Action.HasFlag(Action.Eat | Action.Drink) && (_hunger <= 0 || _thirst <= 0))
             {
-                _health -= Time.deltaTime * 0.01f;
+                _health -= Time.deltaTime * 0.04f;
                 if (_health < 0)
                 {
                     _health = 0;
+                    Death();
                 }
             }
+            else if (_health <= _entityProperties.Properties.MaxHealth)
+            {
+                _health += Time.deltaTime * 0.01f;
+                _health = Mathf.Clamp(_health, 0f, _entityProperties.Properties.MaxHealth);
+            }
+
             if (!Action.HasFlag(Action.Eat) && _hunger > 0)
             {
                 _hunger -= Time.deltaTime * _entityProperties.Properties.HungerDecrease;
@@ -114,6 +178,7 @@ namespace Assets.Scripts.Entities
                     _hunger = 0;
                 }
             }
+
             if (!Action.HasFlag(Action.Drink) && _thirst > 0)
             {
                 _thirst -= Time.deltaTime * _entityProperties.Properties.ThirstDecrease;
@@ -127,13 +192,11 @@ namespace Assets.Scripts.Entities
             {
                 if (_hunger <= 0)
                 {
-                    Debug.Log("Look for food");
                     State = State.Wander;
                     LookFor = LookFor.Food;
                 }
                 else if (_thirst <= 0)
                 {
-                    Debug.Log("Look for water");
                     State = State.Wander;
                     LookFor = LookFor.Water;
                 }
@@ -145,8 +208,13 @@ namespace Assets.Scripts.Entities
 
         public virtual string GetData()
         {
-            return $"Name: {Name}\nState: {State}\nLookFor: {LookFor}\nAction: {Action}"
+            return $"State: {State}\nLookFor: {LookFor}\nAction: {Action}"
                 + $"\nHealth: {_health.ToString("0.##")}\nThirst: {_thirst.ToString("0.##")}\nHunger: {_hunger.ToString("0.##")}\n";
+        }
+
+        public virtual string GetName()
+        {
+            return Name;
         }
 
         public void Select()
@@ -157,6 +225,11 @@ namespace Assets.Scripts.Entities
         public void DeSelect()
         {
             _isSelected = false;
+        }
+
+        public void Death()
+        {
+            Destroy(gameObject);
         }
 
         protected bool DestinationReached()
@@ -187,5 +260,29 @@ namespace Assets.Scripts.Entities
                 return null;
             }
         }
+
+        protected bool TryDoAction()
+        {
+            if (_actionticks >= _entityProperties.Properties.ActionTicks)
+            {
+                _actionticks = 0;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        #region IIdentity
+
+        public IdentitySO GetIdentity()
+        {
+            return _entityProperties.Properties.Identity;
+        }
+
+        #endregion
+
     }
 }

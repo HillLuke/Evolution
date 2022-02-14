@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Interfaces;
+using Assets.Scripts.ScriptableObjects.Identity;
 using Assets.Scripts.ScriptableObjects.Resources;
 using Sirenix.OdinInspector;
 using System;
@@ -11,7 +12,7 @@ using UnityEngine;
 namespace Assets.Scripts.Resources
 {
     [Serializable]
-    public class Resource : MonoBehaviour, ISpawnable, ISpawnAnimationEvents, IMonitorable
+    public class Resource : MonoBehaviour, IResource, ISpawnable, ISpawnAnimationEvents, IMonitorable, IIdentity
     {
         [Title("Public")]
         [ShowInInspector]
@@ -126,7 +127,21 @@ namespace Assets.Scripts.Resources
 
         public string GetData()
         {
-            return $"Name : {_resourceProperties.name}\nType : {_resourceProperties.ResourceType}\nValue: {_value.ToString("#.##")}";
+            return $"Type : {_resourceProperties.ResourceType}\nValue: {_value.ToString("#.##")}";
+        }
+
+        public virtual string GetName()
+        {
+            return _resourceProperties.name;
+        }
+
+        #endregion
+
+        #region IIdentity
+
+        public IdentitySO GetIdentity()
+        {
+            return _resourceProperties.Identity;
         }
 
         #endregion

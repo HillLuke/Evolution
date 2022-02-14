@@ -8,6 +8,7 @@ namespace Assets.Scripts.Manager
 {
     public class EntityManager : MonoBehaviour
     {
+        public static EntityManager Instance;
         public SpawnableEntities SpawnableEntities;
         public int MaxSpawnableEntities;
         public GameObject EntityParent;
@@ -17,6 +18,7 @@ namespace Assets.Scripts.Manager
         private void Awake()
         {
             _spawnedEntities = new List<BaseEntity>();
+            Instance = this;
         }
 
         private void Start()

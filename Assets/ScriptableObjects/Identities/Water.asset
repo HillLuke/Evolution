@@ -9,10 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec6b89961e1af8c47a6acec4b1aa2884, type: 3}
+  m_Script: {fileID: 11500000, guid: cd605381c7e999a4eb16df993541e274, type: 3}
   m_Name: Water
   m_EditorClassIdentifier: 
-  ResourceType: 0
-  MaxValue: 10
-  WorldObject: {fileID: 6963446567325990121, guid: b16798c811230e946bcc8f316cd28fd7, type: 3}
-  Identity: {fileID: 11400000, guid: 02d0b7b4e87a5dc46977dda2bac0c404, type: 2}

@@ -1,3 +1,4 @@
+using Assets.Scripts.ScriptableObjects.Identity;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace Assets.Scripts.ScriptableObjects.Resources
         public float MaxValue;
         [Required]
         public Assets.Scripts.Resources.Resource WorldObject;
+        public IdentitySO Identity;
     }
 
     public enum EResourceType

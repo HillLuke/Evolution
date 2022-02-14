@@ -14,13 +14,24 @@ namespace Assets.Scripts.Entities
 {
     public class BasicHerbivore : BaseEntity, IHerbivore
     {
-        private Collider[] _colliders;
-
-        public override void Awake()
+        protected override void Tick()
         {
-            base.Awake();
+            base.Tick();
 
-            _colliders = new Collider[4];
+            if (_birthticks >= _entityProperties.Properties.BirthTicks)
+            {
+                _birthticks = 0;
+
+                if ((_hunger * _entityProperties.Properties.BirthHungerPercentageNeeded) >= _hunger)
+                {
+                    var chance = Random.Range(1, 100);
+                    if (chance <= _entityProperties.Properties.BirthChance)
+                    {
+                        _hunger -= (_hunger * _entityProperties.Properties.BirthHungerPercentageUsed);
+                        EntityManager.Instance.SpawnEntityAtPosition(_entityProperties.WorldObject, gameObject.transform.position);
+                    }
+                }
+            }
         }
 
         protected override void StateLoop()
@@ -65,106 +76,66 @@ namespace Assets.Scripts.Entities
 
         protected override void DoAction()
         {
-            if (_interactGoal != null)
+            if (_interactGoal != null && TryDoAction())
             {
-                if (_interactTimer <= 0)
+                switch (Action)
                 {
-                    switch (Action)
-                    {
-                        case Action.Eat:
-                            { 
-                                var resource = _interactGoal.GetComponent<Resource>();
+                    case Action.Eat:
+                        {
+                            var resource = _interactGoal.GetComponent<Resource>();
 
-                                if (resource != null)
-                                {
-                                    _hunger += _interactGoal.GetComponent<Resource>().Use(1f);
-                                    _hunger = Mathf.Clamp(_hunger, 0f, _entityProperties.Properties.HungerMax);
-                                    if (_hunger == _entityProperties.Properties.HungerMax)
-                                    {
-                                        _interactGoal = null;
-                                        _goal = Vector3.zero;
-                                        Action = Action.NONE;
-                                        LookFor = LookFor.NONE;
-                                        State = State.Wander;
-                                    }
-                                }
-                                else
-                                {
-                                    Action = Action.NONE;
-                                    LookFor = LookFor.NONE;
-                                    State = State.Wander;
-                                }
-                            }
-                            break;
-                        case Action.Drink:
+                            if (resource != null)
                             {
-                                var resource = _interactGoal.GetComponent<Resource>();
-                                if (resource != null)
+                                _hunger += _interactGoal.GetComponent<Resource>().Use(1f);
+                                _hunger = Mathf.Clamp(_hunger, 0f, _entityProperties.Properties.HungerMax);
+                                if (_hunger == _entityProperties.Properties.HungerMax)
                                 {
-                                    _thirst += _interactGoal.GetComponent<Resource>().Use(1f);
-                                    _thirst = Mathf.Clamp(_thirst, 0f, _entityProperties.Properties.ThirstMax);
-                                    if (_hunger == _entityProperties.Properties.ThirstMax)
-                                    {
-                                        _interactGoal = null;
-                                        _goal = Vector3.zero;
-                                        Action = Action.NONE;
-                                        LookFor = LookFor.NONE;
-                                        State = State.Wander;
-                                    }
-                                }
-                                else
-                                {
+                                    _interactGoal = null;
+                                    _goal = Vector3.zero;
                                     Action = Action.NONE;
                                     LookFor = LookFor.NONE;
                                     State = State.Wander;
                                 }
                             }
-                            break;
-                    }
-                    _interactTimer = _entityProperties.Properties.InteractTime;
-                }
-                else
-                {
-                    _interactTimer -= Time.deltaTime;
+                            else
+                            {
+                                Action = Action.NONE;
+                                LookFor = LookFor.NONE;
+                                State = State.Wander;
+                            }
+                        }
+                        break;
+                    case Action.Drink:
+                        {
+                            var resource = _interactGoal.GetComponent<Resource>();
+                            if (resource != null)
+                            {
+                                _thirst += _interactGoal.GetComponent<Resource>().Use(1f);
+                                _thirst = Mathf.Clamp(_thirst, 0f, _entityProperties.Properties.ThirstMax);
+                                if (_hunger == _entityProperties.Properties.ThirstMax)
+                                {
+                                    _interactGoal = null;
+                                    _goal = Vector3.zero;
+                                    Action = Action.NONE;
+                                    LookFor = LookFor.NONE;
+                                    State = State.Wander;
+                                }
+                            }
+                            else
+                            {
+                                Action = Action.NONE;
+                                LookFor = LookFor.NONE;
+                                State = State.Wander;
+                            }
+                        }
+                        break;
                 }
             }
-            else
+            else if (_interactGoal == null)
             {
                 Action = Action.NONE;
                 LookFor = LookFor.NONE;
                 State = State.Wander;
-            }
-        }
-
-        protected override void LookForTarget()
-        {
-            try
-            {
-                var found = 0;
-                switch (LookFor)
-                {
-                    case LookFor.Food:
-                        found = Physics.OverlapSphereNonAlloc(gameObject.transform.position, _entityProperties.Properties.InteractRange * 4, _colliders, EvolutionManager.Instance.FoodMask.value);
-                        break;
-                    case LookFor.Water:
-                        found = Physics.OverlapSphereNonAlloc(gameObject.transform.position, _entityProperties.Properties.InteractRange * 4, _colliders, EvolutionManager.Instance.WaterMask.value);
-                        break;
-                }
-
-                if (_colliders != null && found > 0)
-                {
-                    State = State.GoTo;
-                    var path = GetPathToTarget(_colliders[0].gameObject.transform.position);
-                    if (path != null && _agent.SetPath(path))
-                    {
-                        _goal = _colliders[0].gameObject.transform.position;
-                        _interactGoal = _colliders[0].gameObject;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogException(ex);
             }
         }
 

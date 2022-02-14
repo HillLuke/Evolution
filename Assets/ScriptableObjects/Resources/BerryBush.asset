@@ -15,3 +15,4 @@ MonoBehaviour:
   ResourceType: 0
   MaxValue: 10
   WorldObject: {fileID: 2650172293897638502, guid: 180209a29e7730e449a0fd6b7914fee2, type: 3}
+  Identity: {fileID: 11400000, guid: 41dc15cf575804a4581294639f6d21ab, type: 2}

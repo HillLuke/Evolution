@@ -2,6 +2,7 @@
 {
     public interface IMonitorable
     {
+        public string GetName();
         public string GetData();
 
         public void Select();

@@ -1,4 +1,8 @@
+using Sirenix.OdinInspector;
+using System;
 using UnityEngine;
+using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Manager
 {
@@ -10,13 +14,40 @@ namespace Assets.Scripts.Manager
         public LayerMask EntityMask;
         public Terrain Terrain;
         public LayerMask SpawnLayer;
+        public UnityEvent OnTick;
 
         private TerrainData _terrainData;
+        [ShowInInspector]
+        private float _tickTimerMax = 0.2f;
+        [ShowInInspector, ReadOnly]
+        private int _tick;
+        [ShowInInspector, ReadOnly]
+        private float _tickTimer;
+
+        private void Awake()
+        {
+            Instance = this;
+            _tick = 0;
+        }
+
+        private void Update()
+        {
+            _tickTimer += Time.deltaTime;
+            if (_tickTimer > _tickTimerMax) 
+            {
+                _tickTimer -= _tickTimerMax;
+                _tick++;
+
+                if (OnTick != null)
+                {
+                    OnTick.Invoke();
+                }
+            }
+        }
 
         public void Start()
         {
             _terrainData = Terrain.terrainData;
-            Instance = this;
         }
 
         public Vector3 GetRandomPointOnMesh()
