@@ -28,7 +28,8 @@ namespace Assets.Scripts.Entities
         public List<IdentitySO> Drinks;
 
         public int BirthTicks;
-        public int BirthChance;
+        [Range(0, 1)]
+        public float BirthChance;
         [Range(0, 1)]
         public float BirthHungerPercentageNeeded;
         [Range(0, 1)]

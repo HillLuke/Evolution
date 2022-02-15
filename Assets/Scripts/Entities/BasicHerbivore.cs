@@ -24,7 +24,7 @@ namespace Assets.Scripts.Entities
 
                 if ((_hunger * _entityProperties.Properties.BirthHungerPercentageNeeded) <= _hunger)
                 {
-                    if (Random.Range(1, 100) <= _entityProperties.Properties.BirthChance)
+                    if (Random.value <= _entityProperties.Properties.BirthChance)
                     {
                         _hunger -= (_hunger * _entityProperties.Properties.BirthHungerPercentageUsed);
                         EntityManager.Instance.SpawnEntityAtPosition(_entityProperties.WorldObject, gameObject.transform.position);
