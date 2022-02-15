@@ -22,10 +22,9 @@ namespace Assets.Scripts.Entities
             {
                 _birthticks = 0;
 
-                if ((_hunger * _entityProperties.Properties.BirthHungerPercentageNeeded) >= _hunger)
+                if ((_hunger * _entityProperties.Properties.BirthHungerPercentageNeeded) <= _hunger)
                 {
-                    var chance = Random.Range(1, 100);
-                    if (chance <= _entityProperties.Properties.BirthChance)
+                    if (Random.Range(1, 100) <= _entityProperties.Properties.BirthChance)
                     {
                         _hunger -= (_hunger * _entityProperties.Properties.BirthHungerPercentageUsed);
                         EntityManager.Instance.SpawnEntityAtPosition(_entityProperties.WorldObject, gameObject.transform.position);

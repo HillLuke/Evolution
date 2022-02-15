@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.Entities
 {
@@ -28,7 +29,9 @@ namespace Assets.Scripts.Entities
 
         public int BirthTicks;
         public int BirthChance;
+        [Range(0, 1)]
         public float BirthHungerPercentageNeeded;
+        [Range(0, 1)]
         public float BirthHungerPercentageUsed;
     }
 }
