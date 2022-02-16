@@ -4,10 +4,7 @@ using Assets.Scripts.ScriptableObjects.Entities;
 using Assets.Scripts.ScriptableObjects.Identity;
 using Sirenix.OdinInspector;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -55,14 +52,50 @@ namespace Assets.Scripts.Entities
         protected int _actionticks;
         [ShowInInspector, ReadOnly]
         protected Collider[] _colliders;
+        [ShowInInspector, ReadOnly]
+        protected bool _isPregnant;
 
-        protected virtual void Tick() 
-        { 
+        protected virtual void Tick()
+        {
             _birthticks++;
             _actionticks++;
+
+
+            if (_birthticks >= _entityProperties.Properties.BirthTicks)
+            {
+                _birthticks = 0;
+
+                if (_isPregnant && (_hunger * _entityProperties.Properties.BirthHungerPercentageNeeded) <= _hunger)
+                {
+                    _isPregnant = false;
+                    var rand = Random.value;
+                    Debug.Log($"rand {rand} - {rand <= _entityProperties.Properties.BirthChance}");
+                    if (rand <= _entityProperties.Properties.BirthChance)
+                    {
+                        _hunger -= (_hunger * _entityProperties.Properties.BirthHungerPercentageUsed);
+                        EntityManager.Instance.SpawnEntityAtPosition(_entityProperties.WorldObject, gameObject.transform.position);
+                    }
+                }
+            }
         }
 
-        protected virtual void Goto() { }
+        protected virtual void Goto()
+        {
+            if (DestinationReached())
+            {
+                switch (LookFor)
+                {
+                    case LookFor.Food:
+                        Action = Action.Eat;
+                        break;
+                    case LookFor.Water:
+                        Action = Action.Drink;
+                        break;
+                }
+                LookFor = LookFor.NONE;
+                State = State.Do;
+            }
+        }
 
         protected virtual void Wander()
         {
@@ -132,7 +165,28 @@ namespace Assets.Scripts.Entities
         }
 
         protected virtual void DoAction() { }
-        protected virtual void StateLoop() { }
+
+        protected virtual void StateLoop()
+        {
+            switch (State)
+            {
+                case State.NONE:
+                    break;
+                case State.Wander:
+                    Wander();
+                    if (LookFor != LookFor.NONE)
+                    {
+                        LookForTarget();
+                    }
+                    break;
+                case State.GoTo:
+                    Goto();
+                    break;
+                case State.Do:
+                    DoAction();
+                    break;
+            }
+        }
 
         public virtual void Awake()
         {
@@ -154,6 +208,14 @@ namespace Assets.Scripts.Entities
         public virtual void Start()
         {
             EvolutionManager.Instance.OnTick.AddListener(Tick);
+        }
+
+        public virtual void FixedUpdate()
+        {
+            if (_agent.hasPath)
+            {
+                transform.position = _agent.nextPosition;
+            }
         }
 
         public virtual void Update()

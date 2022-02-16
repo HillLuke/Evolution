@@ -1,89 +1,11 @@
 ﻿using Assets.Scripts.Interfaces;
-using Assets.Scripts.Manager;
 using Assets.Scripts.Resources;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AI;
-using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Entities
 {
     public class BasicHerbivore : BaseEntity, IHerbivore
     {
-        protected override void Tick()
-        {
-            base.Tick();
-
-            if (_birthticks >= _entityProperties.Properties.BirthTicks)
-            {
-                _birthticks = 0;
-
-                if ((_hunger * _entityProperties.Properties.BirthHungerPercentageNeeded) <= _hunger)
-                {
-                    var rand = Random.value;
-                    Debug.Log($"rand {rand} - {rand <= _entityProperties.Properties.BirthChance}");
-                    if (rand <= _entityProperties.Properties.BirthChance)
-                    {
-                        _hunger -= (_hunger * _entityProperties.Properties.BirthHungerPercentageUsed);
-                        EntityManager.Instance.SpawnEntityAtPosition(_entityProperties.WorldObject, gameObject.transform.position);
-                    }
-                }
-            }
-
-        }
-
-        private void FixedUpdate()
-        {
-            if (_agent.hasPath)
-            {
-                transform.position = _agent.nextPosition;
-            }
-        }
-
-        protected override void StateLoop()
-        {
-            switch (State)
-            {
-                case State.NONE:
-                    break;
-                case State.Wander:
-                    Wander();
-                    if (LookFor != LookFor.NONE)
-                    {
-                        LookForTarget();
-                    }
-                    break;
-                case State.GoTo:
-                    Goto();
-                    break;
-                case State.Do:
-                    DoAction();
-                    break;
-            }
-        }
-
-        protected override void Goto()
-        {
-            if (DestinationReached())
-            {
-                switch (LookFor)
-                {
-                    case LookFor.Food:
-                        Action = Action.Eat;
-                        break;
-                    case LookFor.Water:
-                        Action = Action.Drink;
-                        break;
-                }
-                LookFor = LookFor.NONE;
-                State = State.Do;
-            }
-        }
-
         protected override void DoAction()
         {
             if (_interactGoal != null && TryDoAction())
@@ -148,6 +70,5 @@ namespace Assets.Scripts.Entities
                 State = State.Wander;
             }
         }
-
     }
 }
