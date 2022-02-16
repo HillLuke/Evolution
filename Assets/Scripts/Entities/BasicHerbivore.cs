@@ -37,6 +37,7 @@ namespace Assets.Scripts.Entities
                             }
                         }
                         break;
+
                     case Action.Drink:
                         {
                             var resource = _interactGoal.GetComponent<Resource>();

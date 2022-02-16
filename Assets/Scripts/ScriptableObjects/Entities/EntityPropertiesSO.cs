@@ -1,5 +1,4 @@
 using Assets.Scripts.Entities;
-using Assets.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Assets.Scripts.ScriptableObjects.Entities
@@ -27,4 +26,3 @@ namespace Assets.Scripts.ScriptableObjects.Entities
         }
     }
 }
-

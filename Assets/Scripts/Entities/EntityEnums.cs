@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Assets.Scripts.Entities
+﻿namespace Assets.Scripts.Entities
 {
-    public enum State
+    public enum Action
     {
         NONE,
-        Wander,
-        GoTo,
-        Do
+        Eat,
+        Drink,
+        Mate
     }
 
     public enum LookFor
@@ -22,11 +16,11 @@ namespace Assets.Scripts.Entities
         Mate
     }
 
-    public enum Action
+    public enum State
     {
         NONE,
-        Eat,
-        Drink,
-        Mate
+        Wander,
+        GoTo,
+        Do
     }
 }

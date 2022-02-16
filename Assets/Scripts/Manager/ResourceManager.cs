@@ -1,20 +1,14 @@
 ﻿using Assets.Scripts.Resources;
 using Assets.Scripts.ScriptableObjects.Managers;
-using Assets.Scripts.ScriptableObjects.Resources;
-using Assets.Scripts.Utility;
-using Sirenix.Serialization;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Manager
 {
-
     public class ResourceManager : MonoBehaviour
     {
-        public SpawnableResources SpawnableResources;
         public int MaxSpawnableResources;
         public GameObject ResourceParent;
-
+        public SpawnableResources SpawnableResources;
         private Resource[] _spawnedResources;
 
         private void Awake()

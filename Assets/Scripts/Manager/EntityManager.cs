@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.Entities;
-using System.Collections.Generic;
 using Assets.Scripts.ScriptableObjects.Managers;
-using Assets.Scripts.ScriptableObjects.Entities;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Manager
@@ -9,11 +8,22 @@ namespace Assets.Scripts.Manager
     public class EntityManager : MonoBehaviour
     {
         public static EntityManager Instance;
-        public SpawnableEntities SpawnableEntities;
-        public int MaxSpawnableEntities;
         public GameObject EntityParent;
-
+        public int MaxSpawnableEntities;
+        public SpawnableEntities SpawnableEntities;
         private List<BaseEntity> _spawnedEntities;
+
+        public void SpawnEntityAtPosition(BaseEntity entity, Vector3 position)
+        {
+            _spawnedEntities.Add(
+                Instantiate(
+                    entity,
+                    position,
+                    Quaternion.identity,
+                    EntityParent.transform
+                    )
+                );
+        }
 
         private void Awake()
         {
@@ -34,18 +44,6 @@ namespace Assets.Scripts.Manager
                         );
                 }
             }
-        }
-
-        public void SpawnEntityAtPosition(BaseEntity entity, Vector3 position)
-        {
-            _spawnedEntities.Add(
-                Instantiate(
-                    entity, 
-                    position, 
-                    Quaternion.identity, 
-                    EntityParent.transform
-                    )
-                );
         }
     }
 }

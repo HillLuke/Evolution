@@ -7,19 +7,18 @@ namespace Assets.Scripts.UI
     {
         private GameObject _follow;
 
-        public void Follow(GameObject gameObject)
-        {
-            _follow = gameObject;
-        }
-
         public void Clear()
         {
             _follow = null;
         }
 
+        public void Follow(GameObject gameObject)
+        {
+            _follow = gameObject;
+        }
+
         private void Update()
         {
-
             if (_follow != null)
             {
                 var pos = Camera.main.WorldToScreenPoint(_follow.transform.position);
@@ -31,7 +30,6 @@ namespace Assets.Scripts.UI
             {
                 gameObject.GetComponent<TextMeshProUGUI>().enabled = false;
             }
-
         }
     }
 }

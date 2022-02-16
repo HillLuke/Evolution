@@ -9,6 +9,15 @@ namespace Assets.Scripts.Utility
     [Serializable]
     public class WeightedList<T>
     {
+        [OdinSerialize]
+        public List<Entry> entries = new List<Entry>();
+
+        private bool _accumalatedWeightSet;
+
+        private double accumulatedWeight = 0;
+
+        private Random rand = new Random();
+
         [Serializable]
         public class Entry
         {
@@ -16,17 +25,15 @@ namespace Assets.Scripts.Utility
             public T item;
         }
 
-        [OdinSerialize]
-        public List<Entry> entries = new List<Entry>();
-        private double accumulatedWeight = 0;
-        private Random rand = new Random();
-        private bool _accumalatedWeightSet;
-
-
         public void AddEntry(T item, double weight)
         {
             accumulatedWeight += weight;
             entries.Add(new Entry { item = item, accumulatedWeight = accumulatedWeight });
+        }
+
+        public bool Equals(T other)
+        {
+            throw new NotImplementedException();
         }
 
         public T GetRandom()
@@ -41,12 +48,5 @@ namespace Assets.Scripts.Utility
 
             return f;
         }
-
-        public bool Equals(T other)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
-
-

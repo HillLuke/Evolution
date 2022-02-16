@@ -2,11 +2,12 @@
 {
     public interface IMonitorable
     {
-        public string GetName();
+        public void DeSelect();
+
         public string GetData();
 
-        public void Select();
+        public string GetName();
 
-        public void DeSelect();
+        public void Select();
     }
 }

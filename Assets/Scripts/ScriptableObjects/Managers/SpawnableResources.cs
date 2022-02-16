@@ -1,7 +1,6 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using Assets.Scripts.ScriptableObjects.Resources;
+﻿using Assets.Scripts.ScriptableObjects.Resources;
 using Assets.Scripts.Utility;
+using UnityEngine;
 
 namespace Assets.Scripts.ScriptableObjects.Managers
 {

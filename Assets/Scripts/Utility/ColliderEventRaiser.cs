@@ -13,8 +13,17 @@ namespace Assets.Scripts.Utility
 
         [ShowInInspector, ReadOnly]
         private Collider _collider;
+
         [ShowInInspector, ReadOnly]
         private List<GameObject> _triggers;
+
+        public void SetSize(float size)
+        {
+            if (_collider.GetType() == typeof(SphereCollider))
+            {
+                ((SphereCollider)_collider).radius = size;
+            }
+        }
 
         private void Awake()
         {
@@ -43,14 +52,6 @@ namespace Assets.Scripts.Utility
             if (TriggerExit != null)
             {
                 TriggerExit.Invoke(other);
-            }
-        }
-
-        public void SetSize(float size)
-        {
-            if (_collider.GetType() == typeof(SphereCollider))
-            {
-                ((SphereCollider)_collider).radius = size;
             }
         }
     }

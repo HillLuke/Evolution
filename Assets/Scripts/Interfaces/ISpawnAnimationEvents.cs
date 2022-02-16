@@ -2,7 +2,8 @@
 {
     public interface ISpawnAnimationEvents
     {
-        void SpawnStart();
         void SpawnEnd();
+
+        void SpawnStart();
     }
 }

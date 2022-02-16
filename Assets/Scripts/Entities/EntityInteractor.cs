@@ -1,28 +1,39 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 namespace Assets.Scripts.Entities
 {
     public class EntityInteractor : MonoBehaviour
     {
-        [Title("Private Read Only")]
-        [ShowInInspector, ReadOnly]
-        private SphereCollider _sphereCollider;
-        [ShowInInspector, ReadOnly]
-        private EntityProperties _entityProperties;
-        [ShowInInspector, ReadOnly]
-        private GameObject _interactGoal;
-        [ShowInInspector, ReadOnly]
-        private List<GameObject> _triggers;
+        public System.Action ActoinInRange;
+
         [ShowInInspector, ReadOnly]
         public bool isInInteractRange;
 
-        public System.Action ActoinInRange;
+        [ShowInInspector, ReadOnly]
+        private EntityProperties _entityProperties;
+
+        [ShowInInspector, ReadOnly]
+        private GameObject _interactGoal;
+
+        [ShowInInspector, ReadOnly]
+        private SphereCollider _sphereCollider;
+
+        [ShowInInspector, ReadOnly]
+        private List<GameObject> _triggers;
+
+        public void Init(EntityProperties entityProperties)
+        {
+            _entityProperties = entityProperties;
+            _sphereCollider.radius = _entityProperties.InteractRange;
+        }
+
+        public void SetInteractTarget(GameObject interactGoal)
+        {
+            _interactGoal = interactGoal;
+        }
 
         private void Awake()
         {
@@ -32,28 +43,6 @@ namespace Assets.Scripts.Entities
             if (_sphereCollider == null)
             {
                 throw new ArgumentNullException(nameof(SphereCollider));
-            }
-        }
-
-        public void Init(EntityProperties entityProperties)
-        {
-            _entityProperties = entityProperties;
-            _sphereCollider.radius = _entityProperties.InteractRange;
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (!_triggers.Contains(other.gameObject))
-            {
-                _triggers.Add(other.gameObject);
-            }
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (_triggers.Contains(other.gameObject))
-            {
-                _triggers.Remove(other.gameObject);
             }
         }
 
@@ -78,11 +67,20 @@ namespace Assets.Scripts.Entities
             }
         }
 
-        public void SetInteractTarget(GameObject interactGoal)
+        private void OnTriggerEnter(Collider other)
         {
-            _interactGoal = interactGoal;
+            if (!_triggers.Contains(other.gameObject))
+            {
+                _triggers.Add(other.gameObject);
+            }
         }
 
+        private void OnTriggerExit(Collider other)
+        {
+            if (_triggers.Contains(other.gameObject))
+            {
+                _triggers.Remove(other.gameObject);
+            }
+        }
     }
-
 }

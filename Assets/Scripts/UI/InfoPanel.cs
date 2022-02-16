@@ -6,11 +6,10 @@ namespace Assets.Scripts.UI
 {
     public class InfoPanel : MonoBehaviour
     {
-        public SelectedWorldItem selectedWorldItem;
-        public TextMeshProUGUI Title;
         public TextMeshProUGUI Data;
         public GameObject Panel;
-
+        public SelectedWorldItem selectedWorldItem;
+        public TextMeshProUGUI Title;
         private IMonitorable _monitorable;
 
         private void Update()

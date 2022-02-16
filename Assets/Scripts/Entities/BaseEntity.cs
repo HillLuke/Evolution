@@ -14,179 +14,58 @@ namespace Assets.Scripts.Entities
     [Serializable]
     public abstract class BaseEntity : MonoBehaviour, IEntity, IMonitorable, IIdentity
     {
+        [ShowInInspector, ReadOnly]
+        public Action Action { get; protected set; }
+
+        [ShowInInspector, ReadOnly]
+        public LookFor LookFor { get; protected set; }
+
         public string Name => _entityProperties.Properties.Name;
 
         [ShowInInspector, ReadOnly]
         public State State { get; protected set; }
-        [ShowInInspector, ReadOnly]
-        public LookFor LookFor { get; protected set; }
-        [ShowInInspector, ReadOnly]
-        public Action Action { get; protected set; }
 
-        [Title("Private Serialized")]
+        [ShowInInspector, ReadOnly]
+        protected int _actionticks;
+
+        [ShowInInspector, ReadOnly]
+        protected NavMeshAgent _agent;
+
+        [ShowInInspector, ReadOnly]
+        protected int _birthticks;
+
+        [ShowInInspector, ReadOnly]
+        protected Collider[] _colliders;
+
         [SerializeField]
         protected EntityPropertiesSO _entityProperties;
 
-        [Title("Private Read Only")]
-        [ShowInInspector, ReadOnly]
-        protected bool _isSelected;
-        [ShowInInspector, ReadOnly]
-        protected float _hunger;
-        [ShowInInspector, ReadOnly]
-        protected float _health;
-        [ShowInInspector, ReadOnly]
-        protected float _thirst;
-        [ShowInInspector, ReadOnly]
-        protected GameObject _interactGoal;
         [ShowInInspector, ReadOnly]
         protected Vector3 _goal;
+
         [ShowInInspector, ReadOnly]
         protected Vector3 _goalOriginal;
+
         [ShowInInspector, ReadOnly]
-        protected NavMeshAgent _agent;
+        protected float _health;
+
         [ShowInInspector, ReadOnly]
-        protected NavMeshPath _path;
+        protected float _hunger;
+
         [ShowInInspector, ReadOnly]
-        protected int _birthticks;
-        [ShowInInspector, ReadOnly]
-        protected int _actionticks;
-        [ShowInInspector, ReadOnly]
-        protected Collider[] _colliders;
+        protected GameObject _interactGoal;
+
         [ShowInInspector, ReadOnly]
         protected bool _isPregnant;
 
-        protected virtual void Tick()
-        {
-            _birthticks++;
-            _actionticks++;
+        [ShowInInspector, ReadOnly]
+        protected bool _isSelected;
 
+        [ShowInInspector, ReadOnly]
+        protected NavMeshPath _path;
 
-            if (_birthticks >= _entityProperties.Properties.BirthTicks)
-            {
-                _birthticks = 0;
-
-                if (_isPregnant && (_hunger * _entityProperties.Properties.BirthHungerPercentageNeeded) <= _hunger)
-                {
-                    _isPregnant = false;
-                    var rand = Random.value;
-                    Debug.Log($"rand {rand} - {rand <= _entityProperties.Properties.BirthChance}");
-                    if (rand <= _entityProperties.Properties.BirthChance)
-                    {
-                        _hunger -= (_hunger * _entityProperties.Properties.BirthHungerPercentageUsed);
-                        EntityManager.Instance.SpawnEntityAtPosition(_entityProperties.WorldObject, gameObject.transform.position);
-                    }
-                }
-            }
-        }
-
-        protected virtual void Goto()
-        {
-            if (DestinationReached())
-            {
-                switch (LookFor)
-                {
-                    case LookFor.Food:
-                        Action = Action.Eat;
-                        break;
-                    case LookFor.Water:
-                        Action = Action.Drink;
-                        break;
-                }
-                LookFor = LookFor.NONE;
-                State = State.Do;
-            }
-        }
-
-        protected virtual void Wander()
-        {
-            if (TryDoAction() && (_goal == Vector3.zero || DestinationReached()))
-            {
-                Vector3 direction = Random.insideUnitSphere * Random.Range(_entityProperties.Properties.MinWalkable, _entityProperties.Properties.MaxWalkable);
-                direction += gameObject.transform.position;
-
-                NavMeshHit navMeshHit;
-                NavMesh.SamplePosition(direction, out navMeshHit, _entityProperties.Properties.MaxWalkable, 1);
-                Vector3 goalOriginal = navMeshHit.position;
-                Vector3 pathDir = transform.position - goalOriginal;
-                var goal = goalOriginal + (pathDir.normalized * (_agent.radius));
-
-                var path = GetPathToTarget(goal);
-
-
-
-                if (path != null && _agent.SetPath(path))
-                {
-                    _goal = goal;
-                }
-            }
-        }
-        protected virtual void LookForTarget()
-        {
-            try
-            {
-                Array.Clear(_colliders, 0, _colliders.Length);
-                Physics.OverlapSphereNonAlloc(gameObject.transform.position, _entityProperties.Properties.InteractRange * 4, _colliders);
-
-                GameObject target = null;
-
-                switch (LookFor)
-                {
-                    case LookFor.Food:
-                        {
-                            var food = _colliders.Where(x => x?.GetComponent<IIdentity>() != null && _entityProperties.Properties.Eats.Contains(x?.GetComponent<IIdentity>()?.GetIdentity())).Select(x => x.gameObject).ToList();
-                            target = food.FirstOrDefault();
-                        }
-                        break;
-                    case LookFor.Water:
-                        {
-                            var water = _colliders.Where(x => x?.GetComponent<IIdentity>() != null && _entityProperties.Properties.Drinks.Contains(x?.GetComponent<IIdentity>()?.GetIdentity())).Select(x => x.gameObject).ToList();
-                            target = water.FirstOrDefault();
-                        }
-                        break;
-                }
-
-                Array.Clear(_colliders, 0, _colliders.Length);
-
-                if (target != null)
-                {
-                    State = State.GoTo;
-                    var path = GetPathToTarget(target.transform.position);
-                    if (path != null && _agent.SetPath(path))
-                    {
-                        _goal = target.transform.position;
-                        _interactGoal = target;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogException(ex);
-            }
-        }
-
-        protected virtual void DoAction() { }
-
-        protected virtual void StateLoop()
-        {
-            switch (State)
-            {
-                case State.NONE:
-                    break;
-                case State.Wander:
-                    Wander();
-                    if (LookFor != LookFor.NONE)
-                    {
-                        LookForTarget();
-                    }
-                    break;
-                case State.GoTo:
-                    Goto();
-                    break;
-                case State.Do:
-                    DoAction();
-                    break;
-            }
-        }
+        [ShowInInspector, ReadOnly]
+        protected float _thirst;
 
         public virtual void Awake()
         {
@@ -204,10 +83,14 @@ namespace Assets.Scripts.Entities
             _colliders = new Collider[4];
         }
 
-
-        public virtual void Start()
+        public void Death()
         {
-            EvolutionManager.Instance.OnTick.AddListener(Tick);
+            Destroy(gameObject);
+        }
+
+        public void DeSelect()
+        {
+            _isSelected = false;
         }
 
         public virtual void FixedUpdate()
@@ -216,6 +99,32 @@ namespace Assets.Scripts.Entities
             {
                 transform.position = _agent.nextPosition;
             }
+        }
+
+        public virtual string GetData()
+        {
+            return $"State: {State}\nLookFor: {LookFor}\nAction: {Action}"
+                + $"\nHealth: {_health.ToString("0.##")}\nThirst: {_thirst.ToString("0.##")}\nHunger: {_hunger.ToString("0.##")}\n";
+        }
+
+        public IdentitySO GetIdentity()
+        {
+            return _entityProperties.Properties.Identity;
+        }
+
+        public virtual string GetName()
+        {
+            return Name;
+        }
+
+        public void Select()
+        {
+            _isSelected = true;
+        }
+
+        public virtual void Start()
+        {
+            EvolutionManager.Instance.OnTick.AddListener(Tick);
         }
 
         public virtual void Update()
@@ -265,36 +174,9 @@ namespace Assets.Scripts.Entities
                     State = State.Wander;
                     LookFor = LookFor.Water;
                 }
-
             }
 
             StateLoop();
-        }
-
-        public virtual string GetData()
-        {
-            return $"State: {State}\nLookFor: {LookFor}\nAction: {Action}"
-                + $"\nHealth: {_health.ToString("0.##")}\nThirst: {_thirst.ToString("0.##")}\nHunger: {_hunger.ToString("0.##")}\n";
-        }
-
-        public virtual string GetName()
-        {
-            return Name;
-        }
-
-        public void Select()
-        {
-            _isSelected = true;
-        }
-
-        public void DeSelect()
-        {
-            _isSelected = false;
-        }
-
-        public void Death()
-        {
-            Destroy(gameObject);
         }
 
         protected bool DestinationReached()
@@ -313,6 +195,9 @@ namespace Assets.Scripts.Entities
             return false;
         }
 
+        protected virtual void DoAction()
+        { }
+
         protected NavMeshPath GetPathToTarget(Vector3 target)
         {
             NavMeshPath path = new NavMeshPath();
@@ -323,6 +208,118 @@ namespace Assets.Scripts.Entities
             else
             {
                 return null;
+            }
+        }
+
+        protected virtual void Goto()
+        {
+            if (DestinationReached())
+            {
+                switch (LookFor)
+                {
+                    case LookFor.Food:
+                        Action = Action.Eat;
+                        break;
+
+                    case LookFor.Water:
+                        Action = Action.Drink;
+                        break;
+                }
+                LookFor = LookFor.NONE;
+                State = State.Do;
+            }
+        }
+
+        protected virtual void LookForTarget()
+        {
+            try
+            {
+                Array.Clear(_colliders, 0, _colliders.Length);
+                Physics.OverlapSphereNonAlloc(gameObject.transform.position, _entityProperties.Properties.InteractRange * 4, _colliders);
+
+                GameObject target = null;
+
+                switch (LookFor)
+                {
+                    case LookFor.Food:
+                        {
+                            var food = _colliders.Where(x => x?.GetComponent<IIdentity>() != null && _entityProperties.Properties.Eats.Contains(x?.GetComponent<IIdentity>()?.GetIdentity())).Select(x => x.gameObject).ToList();
+                            target = food.FirstOrDefault();
+                        }
+                        break;
+
+                    case LookFor.Water:
+                        {
+                            var water = _colliders.Where(x => x?.GetComponent<IIdentity>() != null && _entityProperties.Properties.Drinks.Contains(x?.GetComponent<IIdentity>()?.GetIdentity())).Select(x => x.gameObject).ToList();
+                            target = water.FirstOrDefault();
+                        }
+                        break;
+                }
+
+                Array.Clear(_colliders, 0, _colliders.Length);
+
+                if (target != null)
+                {
+                    State = State.GoTo;
+                    var path = GetPathToTarget(target.transform.position);
+                    if (path != null && _agent.SetPath(path))
+                    {
+                        _goal = target.transform.position;
+                        _interactGoal = target;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+        }
+
+        protected virtual void StateLoop()
+        {
+            switch (State)
+            {
+                case State.NONE:
+                    break;
+
+                case State.Wander:
+                    Wander();
+                    if (LookFor != LookFor.NONE)
+                    {
+                        LookForTarget();
+                    }
+                    break;
+
+                case State.GoTo:
+                    Goto();
+                    break;
+
+                case State.Do:
+                    DoAction();
+                    break;
+            }
+        }
+
+        protected virtual void Tick()
+        {
+            _birthticks++;
+            _actionticks++;
+
+            if (_birthticks >= _entityProperties.Properties.BirthTicks)
+            {
+                _birthticks = 0;
+
+                if (_isPregnant && (_hunger * _entityProperties.Properties.BirthHungerPercentageNeeded) <= _hunger)
+                {
+                    _isPregnant = false;
+                    var rand = Random.value;
+                    Debug.Log($"rand {rand} - {rand <= _entityProperties.Properties.BirthChance}");
+                    if (rand <= _entityProperties.Properties.BirthChance)
+                    {
+                        _hunger -= (_hunger * _entityProperties.Properties.BirthHungerPercentageUsed);
+                        EntityManager.Instance.SpawnEntityAtPosition(_entityProperties.WorldObject, gameObject.transform.position);
+                    }
+                }
             }
         }
 
@@ -339,15 +336,26 @@ namespace Assets.Scripts.Entities
             }
         }
 
-
-        #region IIdentity
-
-        public IdentitySO GetIdentity()
+        protected virtual void Wander()
         {
-            return _entityProperties.Properties.Identity;
+            if (TryDoAction() && (_goal == Vector3.zero || DestinationReached()))
+            {
+                Vector3 direction = Random.insideUnitSphere * Random.Range(_entityProperties.Properties.MinWalkable, _entityProperties.Properties.MaxWalkable);
+                direction += gameObject.transform.position;
+
+                NavMeshHit navMeshHit;
+                NavMesh.SamplePosition(direction, out navMeshHit, _entityProperties.Properties.MaxWalkable, 1);
+                Vector3 goalOriginal = navMeshHit.position;
+                Vector3 pathDir = transform.position - goalOriginal;
+                var goal = goalOriginal + (pathDir.normalized * (_agent.radius));
+
+                var path = GetPathToTarget(goal);
+
+                if (path != null && _agent.SetPath(path))
+                {
+                    _goal = goal;
+                }
+            }
         }
-
-        #endregion
-
     }
 }
