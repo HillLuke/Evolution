@@ -96,6 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _resourceProperties: {fileID: 11400000, guid: 16461a6033dcc3e4dbccb3c0bcb49d40, type: 2}
+  _worldModel: {fileID: 366745203751593066}
 --- !u!1001 &1085634978350891702
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -185,6 +186,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
+--- !u!1 &366745203751593066 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 722268720418334428, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}
+  m_PrefabInstance: {fileID: 1085634978350891702}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &366745203751593065 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 722268720418334431, guid: e6cd7e159931b224aa8d4971f86ed508, type: 3}

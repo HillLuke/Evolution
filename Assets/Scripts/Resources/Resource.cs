@@ -25,6 +25,9 @@ namespace Assets.Scripts.Resources
         [Required, SerializeReference]
         private ResourceSO _resourceProperties;
 
+        [Required, SerializeField]
+        private GameObject _worldModel;
+
         private float _value;
 
         public void DeSelect()
@@ -62,14 +65,13 @@ namespace Assets.Scripts.Resources
 
         public void SpawnEnd()
         {
-            if (_animator)
-            {
-                gameObject.transform.localScale = Vector3.one;
-            }
+            gameObject.transform.localScale = Vector3.one;
         }
 
         public void SpawnStart()
         {
+            gameObject.transform.localScale = Vector3.zero;
+            _worldModel.SetActive(true);
         }
 
         public float Use(float amount)
@@ -103,11 +105,20 @@ namespace Assets.Scripts.Resources
             _value = _resourceProperties?.MaxValue ?? throw new NullReferenceException(nameof(Resource));
             _animator = GetComponent<Animator>() ?? null;
 
-            if (_animator)
-            {
-                gameObject.transform.localScale = Vector3.zero;
-            }
+            _worldModel.SetActive(false);
+
             _isSelected = false;
+        }
+
+        private void Start()
+        {
+            gameObject.transform.localScale = Vector3.zero;
+            Invoke("Spawn", 1);
+        }
+
+        private void Update()
+        {
+            DestroyIfValueIsZero();
         }
 
         private void DestroyIfValueIsZero()
@@ -116,16 +127,6 @@ namespace Assets.Scripts.Resources
             {
                 Destroy(gameObject);
             }
-        }
-
-        private void Start()
-        {
-            Invoke("Spawn", 1);
-        }
-
-        private void Update()
-        {
-            DestroyIfValueIsZero();
         }
     }
 }
