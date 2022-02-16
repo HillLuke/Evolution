@@ -79,6 +79,8 @@ namespace Assets.Scripts.Entities
 
                 var path = GetPathToTarget(goal);
 
+
+
                 if (path != null && _agent.SetPath(path))
                 {
                     _goal = goal;
@@ -139,6 +141,7 @@ namespace Assets.Scripts.Entities
             Action = Action.NONE;
             _path = new NavMeshPath();
             _agent = GetComponent<NavMeshAgent>();
+            _agent.updatePosition = false;
             _isSelected = false;
             _thirst = _entityProperties.Properties.ThirstMax;
             _hunger = _entityProperties.Properties.HungerMax;

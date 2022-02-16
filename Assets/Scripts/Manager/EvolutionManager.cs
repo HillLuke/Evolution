@@ -30,9 +30,9 @@ namespace Assets.Scripts.Manager
             _tick = 0;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            _tickTimer += Time.deltaTime;
+            _tickTimer += Time.fixedDeltaTime;
             if (_tickTimer > _tickTimerMax) 
             {
                 _tickTimer -= _tickTimerMax;
@@ -80,5 +80,10 @@ namespace Assets.Scripts.Manager
 
         //    return pos;
         //}
+
+        public void SetTimeScale(int timeScale)
+        {
+            Time.timeScale = timeScale;
+        }
     }
 }

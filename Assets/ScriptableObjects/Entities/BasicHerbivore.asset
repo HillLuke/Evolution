@@ -30,7 +30,7 @@ MonoBehaviour:
     Drinks:
     - {fileID: 11400000, guid: 02d0b7b4e87a5dc46977dda2bac0c404, type: 2}
     BirthTicks: 10
-    BirthChance: 0.9
+    BirthChance: 0.05
     BirthHungerPercentageNeeded: 0.7
     BirthHungerPercentageUsed: 0.4
   WorldObject: {fileID: 7200522718009532444, guid: ad42c76876a2f2145bf3d1b60676a5ee, type: 3}

@@ -24,12 +24,23 @@ namespace Assets.Scripts.Entities
 
                 if ((_hunger * _entityProperties.Properties.BirthHungerPercentageNeeded) <= _hunger)
                 {
-                    if (Random.value <= _entityProperties.Properties.BirthChance)
+                    var rand = Random.value;
+                    Debug.Log($"rand {rand} - {rand <= _entityProperties.Properties.BirthChance}");
+                    if (rand <= _entityProperties.Properties.BirthChance)
                     {
                         _hunger -= (_hunger * _entityProperties.Properties.BirthHungerPercentageUsed);
                         EntityManager.Instance.SpawnEntityAtPosition(_entityProperties.WorldObject, gameObject.transform.position);
                     }
                 }
+            }
+
+        }
+
+        private void FixedUpdate()
+        {
+            if (_agent.hasPath)
+            {
+                transform.position = _agent.nextPosition;
             }
         }
 

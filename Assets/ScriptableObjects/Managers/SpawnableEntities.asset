@@ -14,7 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpawnableList:
     entries:
-    - accumulatedWeight: 70
+    - accumulatedWeight: 100
       item: {fileID: 11400000, guid: 2ab745cbef3c5bd438c34cb8699a245c, type: 2}
-    - accumulatedWeight: 40
-      item: {fileID: 11400000, guid: e25568e007f3f204bae949bdd98e3281, type: 2}
