@@ -26,6 +26,9 @@ namespace Assets.Scripts.Manager
         [ShowInInspector]
         private float _tickTimerMax = 0.2f;
 
+        [ShowInInspector, ReadOnly]
+        private int _timeScale;
+
         public Vector3 GetRandomPointOnMesh()
         {
             float randomX = Random.Range(_terrainData.bounds.min.x, _terrainData.bounds.max.x);
@@ -44,7 +47,8 @@ namespace Assets.Scripts.Manager
 
         public void SetTimeScale(int timeScale)
         {
-            Time.timeScale = timeScale;
+            _timeScale = timeScale;
+            Time.timeScale = _timeScale;
         }
 
         public void Start()
