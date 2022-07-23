@@ -20,10 +20,12 @@ namespace Assets.Scripts.Entities
         [ShowInInspector, ReadOnly]
         public LookFor LookFor { get; protected set; }
 
-        public string Name => _entityProperties.Properties.Name;
-
         [ShowInInspector, ReadOnly]
         public State State { get; protected set; }
+
+        public string Name => _entityProperties.Properties.Name;
+
+        public float Health => _health;
 
         [ShowInInspector, ReadOnly]
         protected int _actionticks;
@@ -80,7 +82,7 @@ namespace Assets.Scripts.Entities
             _hunger = _entityProperties.Properties.HungerMax;
             _health = _entityProperties.Properties.MaxHealth;
             _birthticks = 0;
-            _colliders = new Collider[4];
+            _colliders = new Collider[20];
         }
 
         public void Death()
@@ -129,14 +131,14 @@ namespace Assets.Scripts.Entities
 
         public virtual void Update()
         {
+            if (_health <= 0)
+            {
+                Death();
+            }
+
             if (!Action.HasFlag(Action.Eat | Action.Drink) && (_hunger <= 0 || _thirst <= 0))
             {
                 _health -= Time.deltaTime * 0.04f;
-                if (_health < 0)
-                {
-                    _health = 0;
-                    Death();
-                }
             }
             else if (_health <= _entityProperties.Properties.MaxHealth)
             {
@@ -177,6 +179,20 @@ namespace Assets.Scripts.Entities
             }
 
             StateLoop();
+        }
+
+        public float Damage(float damage)
+        {
+            if (_health >= damage)
+            {
+                _health -= damage;
+                return damage;
+            }
+            else
+            {
+                _health -= damage;
+                return damage - Math.Abs(_health);
+            }
         }
 
         protected bool DestinationReached()
@@ -235,7 +251,7 @@ namespace Assets.Scripts.Entities
             try
             {
                 Array.Clear(_colliders, 0, _colliders.Length);
-                Physics.OverlapSphereNonAlloc(gameObject.transform.position, _entityProperties.Properties.InteractRange * 4, _colliders);
+                Physics.OverlapSphereNonAlloc(gameObject.transform.position, _entityProperties.Properties.InteractRange * 2, _colliders, _entityProperties.Properties.HungerLayers.value);
 
                 GameObject target = null;
 
@@ -243,14 +259,20 @@ namespace Assets.Scripts.Entities
                 {
                     case LookFor.Food:
                         {
-                            var food = _colliders.Where(x => x?.GetComponent<IIdentity>() != null && _entityProperties.Properties.Eats.Contains(x?.GetComponent<IIdentity>()?.GetIdentity())).Select(x => x.gameObject).ToList();
+                            var food = _colliders
+                                .Where(x => x?.GetComponent<IIdentity>() != null && _entityProperties.Properties.Eats.Contains(x?.GetComponent<IIdentity>()?.GetIdentity()))
+                                .OrderBy(x => Vector3.Distance(gameObject.transform.position, x.transform.position))
+                                .Select(x => x.gameObject).ToList();
                             target = food.FirstOrDefault();
                         }
                         break;
 
                     case LookFor.Water:
                         {
-                            var water = _colliders.Where(x => x?.GetComponent<IIdentity>() != null && _entityProperties.Properties.Drinks.Contains(x?.GetComponent<IIdentity>()?.GetIdentity())).Select(x => x.gameObject).ToList();
+                            var water = _colliders
+                                .Where(x => x?.GetComponent<IIdentity>() != null && _entityProperties.Properties.Drinks.Contains(x?.GetComponent<IIdentity>()?.GetIdentity()))
+                                .OrderBy(x => Vector3.Distance(gameObject.transform.position, x.transform.position))
+                                .Select(x => x.gameObject).ToList();
                             target = water.FirstOrDefault();
                         }
                         break;

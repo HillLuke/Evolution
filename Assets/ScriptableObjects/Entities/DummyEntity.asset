@@ -10,30 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 582af7de5614c6f499e33b36c03bc017, type: 3}
-  m_Name: BasicCarnivore
+  m_Name: DummyEntity
   m_EditorClassIdentifier: 
   Properties:
-    ActionTicks: 5
+    ActionTicks: 0
     BirthChance: 0
     BirthHungerPercentageNeeded: 0
     BirthHungerPercentageUsed: 0
     BirthTicks: 0
-    Drinks:
-    - {fileID: 11400000, guid: 02d0b7b4e87a5dc46977dda2bac0c404, type: 2}
-    Eats:
-    - {fileID: 11400000, guid: effae52f476c0f548a739f136e1c19fb, type: 2}
-    HungerDecrease: 0.2
-    HungerMax: 2
-    Identity: {fileID: 11400000, guid: 43d1e4aeb33479b44a17315336531a8c, type: 2}
+    Drinks: []
+    Eats: []
+    HungerDecrease: 0.02
+    HungerMax: 10
+    Identity: {fileID: 11400000, guid: effae52f476c0f548a739f136e1c19fb, type: 2}
     InteractRange: 1.5
     InteractTime: 1
-    MaxHealth: 20
-    MaxWalkable: 16
-    MinWalkable: 8
-    Name: Carnivore
+    MaxHealth: 10
+    MaxWalkable: 10
+    MinWalkable: 5
+    Name: 
     ThirstDecrease: 0.01
     ThirstMax: 10
-    HungerLayers:
-      serializedVersion: 2
-      m_Bits: 256
-  WorldObject: {fileID: -3755204638589203363, guid: 590026d9c5b1e8349940b1973dc943cc, type: 3}
+  WorldObject: {fileID: 4459795847813366624, guid: 56d3ca8fadf1bf140a1c6b22dee10ef7, type: 3}

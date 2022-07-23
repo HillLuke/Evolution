@@ -33,5 +33,6 @@ namespace Assets.Scripts.Entities
         public string Name;
         public float ThirstDecrease;
         public float ThirstMax;
+        public LayerMask HungerLayers;
     }
 }
